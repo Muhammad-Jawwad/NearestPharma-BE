@@ -2,20 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-// const morgan = require('morgan')
-// const path = require("path");
-// const userRoutes = require("./api/routes/user");
-// const notificationRoutes = require("./api/routes/notification");
-// const achievementRoutes = require("./api/routes/achievement");
-// const eventRoutes = require("./api/routes/event");
+const areaRoutes = require("./api/routes/area");
+const pharmacyRoutes = require("./api/routes/pharmacy");
 const app = express();
 
 app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(morgan('dev'))
-// app.use('/images', express.static(path.join(__dirname, 'images')));
-// console.log(path.join(__dirname, 'images'));
 
 // To protect from CORS
 app.use((req, res, next) => {
@@ -29,10 +22,8 @@ app.use((req, res, next) => {
 });
 
 // Routes
-// app.use(userRoutes);
-// app.use(notificationRoutes);
-// app.use(achievementRoutes);
-// app.use(eventRoutes);
+app.use(areaRoutes);
+app.use(pharmacyRoutes);
 
 // setting mongoose connection and starting server
 mongoose.set("strictQuery", false);

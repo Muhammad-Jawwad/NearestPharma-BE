@@ -17,8 +17,7 @@ const authenticateToken = (req, res, next) => {
             });
         }
         req.token = token;
-        req.userId = decodedToken.userId;
-        req.userRole = decodedToken.userRole;
+        req.id = decodedToken.id;
         next();
     } catch (err) {
         return res.status(401).json({

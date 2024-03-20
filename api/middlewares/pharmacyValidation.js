@@ -1,7 +1,6 @@
 const { body } = require("express-validator");
 
 module.exports = {
-    // Validation middleware for New Pharmacy
     validateCreatePharmacy: [
         body('username')
             .notEmpty().withMessage('Username is required')
@@ -56,7 +55,6 @@ module.exports = {
             .isString().withMessage('Address must be a string')
     ],
 
-    // Validation middleware for Update Pharmacy
     validateUpdatePharmacy: [
         body('branchName')
             .optional()
@@ -97,5 +95,19 @@ module.exports = {
         body('address')
             .optional()
             .isString().withMessage('Address must be a string')
+    ],
+
+    validateLoginPharmacy: [
+        body('username')
+            .notEmpty().withMessage('Username is required')
+            .isString().withMessage('Username must be a string')
+            .trim().withMessage('Username cannot have leading or trailing whitespace')
+            .isLength({ min: 4 }).withMessage('Username must be at least 4 characters long'),
+
+        body('password')
+            .notEmpty().withMessage('Password is required')
+            .isString().withMessage('Password must be a string')
+            .trim().withMessage('Password cannot have leading or trailing whitespace')
+            .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
     ],
 };

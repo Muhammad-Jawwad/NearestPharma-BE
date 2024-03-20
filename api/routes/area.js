@@ -4,17 +4,17 @@ const { validateCreateArea, validateUpdateArea } = require("../middlewares/areaV
 const router = require("express").Router();
 
 
-router.get("/area", getArea);
-router.post("/new-area",
+router.get("/", getArea);
+router.post("/new",
     validateCreateArea,
     createArea
 );
-router.get("/area/:id", getAreaById);
-router.patch("/update-area/:id",
+router.get("/:id", getAreaById);
+router.patch("/update/:id",
     validateUpdateArea,
     updateArea
 );
-router.delete("/delete-area/:id", deleteArea);
+router.delete("/delete/:id", deleteArea);
 
 
 

@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const areaRoutes = require("./api/routes/area");
 const pharmacyRoutes = require("./api/routes/pharmacy");
+const medicineRoutes = require("./api/routes/medicine");
 const app = express();
 
 app.use(express.json());
@@ -22,8 +23,9 @@ app.use((req, res, next) => {
 });
 
 // Routes
-app.use(areaRoutes);
-app.use(pharmacyRoutes);
+app.use("/area", areaRoutes);
+app.use("/pharmacy",pharmacyRoutes);
+app.use("/medicine",medicineRoutes);
 
 // setting mongoose connection and starting server
 mongoose.set("strictQuery", false);

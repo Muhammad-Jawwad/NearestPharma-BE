@@ -1,7 +1,6 @@
 const { body } = require("express-validator");
 
 module.exports = {
-    // Validation middleware for New Area
     validateCreateArea: [
         body('areaName')
             .notEmpty().withMessage('Area name is required')
@@ -18,9 +17,14 @@ module.exports = {
         body('country')
             .notEmpty().withMessage('Country is required')
             .isString().withMessage('Country must be a string')
+            .custom((value) => {
+                if (value.toUpperCase() !== 'PK') {
+                    throw new Error('Country must be "PK"');
+                }
+                return true;
+            }),
     ],
 
-    // Validation middleware for Update Area
     validateUpdateArea: [
         body('areaName')
             .optional()
@@ -36,6 +40,12 @@ module.exports = {
 
         body('country')
             .optional()
-            .isString().withMessage('Country must be a string'),
+            .isString().withMessage('Country must be a string')
+            .custom((value) => {
+                if (value.toUpperCase() !== 'PK') {
+                    throw new Error('Country must be "PK"');
+                }
+                return true;
+            }),
     ],
 };

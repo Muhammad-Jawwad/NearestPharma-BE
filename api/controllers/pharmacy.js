@@ -304,7 +304,8 @@ module.exports = {
             const newPharmacyMedicine = new PharmacyMedicine({
                 pharmacyId: req.body.pharmacyId,
                 medicineId: req.body.medicineId,
-                medicineQuantity: req.body.medicineQuantity
+                medicineQuantity: req.body.medicineQuantity,
+                price: req.body.price,
             });
             const PharmacyMedicineDetails = await newPharmacyMedicine.save();
 
@@ -420,8 +421,12 @@ module.exports = {
                 });
             }
 
+            if (req.body.medicineName) {
+                isExistMedicine.medicineName = req.body.medicineName;
+                await isExistMedicine.save(); // Save the updated medicine
+            }
             const updateFields = {};
-            const fieldsToUpdate = ['pharmacyId', 'medicineId', 'medicineQuantity'];
+            const fieldsToUpdate = ['pharmacyId', 'medicineId', 'medicineQuantity', 'price'];
             fieldsToUpdate.forEach(field => {
                 if (req.body[field] !== undefined) {
                     updateFields[field] = req.body[field];
@@ -441,6 +446,39 @@ module.exports = {
                 status: 201,
                 message: "New Pharmacy-Medicine updated successfully",
                 data: updatedPharmacyMedicine
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                code: 500,
+                error: error.name,
+                message: error.message,
+            });
+        }
+    },
+
+    deletePharmacyMedicine: async (req, res) => {
+        try {
+           
+            const id = req.params.id; //To seprate the id from the parameter
+            if (!id) {
+                return res.status(400).json({
+                    message: "pahrmacy medicine id is required in params",
+                });
+            }
+
+            const deletedPharmacyMedicine = await PharmacyMedicine.findByIdAndDelete(id);
+
+            if (!deletedPharmacyMedicine) {
+                return res.status(404).json({
+                    code: 404,
+                    message: "Pharmacy-Medicine not found",
+                });
+            }
+            // Returning success message
+            res.status(200).json({
+                status: 200,
+                message: "New Pharmacy-Medicine deleted successfully"
             });
         } catch (error) {
             console.log(error);

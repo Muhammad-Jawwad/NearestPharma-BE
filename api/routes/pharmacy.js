@@ -1,4 +1,4 @@
-const { getPharmacy, createPharmacy, getPharmacyById, updatePharmacy, deletePharmacy, loginPharmacy, getPharmacyMedicine, createPharmacyMedicine, getMedicineByPharmay, updatePharmacyMedicine } = require("../controllers/pharmacy");
+const { getPharmacy, createPharmacy, getPharmacyById, updatePharmacy, deletePharmacy, loginPharmacy, getPharmacyMedicine, createPharmacyMedicine, getMedicineByPharmay, updatePharmacyMedicine, deletePharmacyMedicine } = require("../controllers/pharmacy");
 const { validateCreatePharmacyMedicine, validateUpdatePharmacyMedicine } = require("../middlewares/pharmacyMedicineValidation");
 const { validateUpdatePharmacy, validateCreatePharmacy, validateLoginPharmacy } = require("../middlewares/pharmacyValidation");
 
@@ -40,6 +40,7 @@ router.patch("/updateMedicineQuantity/:id",
     validateUpdatePharmacyMedicine,
     updatePharmacyMedicine
 );
+router.get("/deleteRegisteredMedicine/:id", deletePharmacyMedicine);
 
 //#endregion
 

@@ -12,7 +12,8 @@ const pharmacyMedicineSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'Medicine'
         },
-        medicineQuantity: Number
+        medicineQuantity: Number,
+        price: Number
     },
     { timestamps: true }
 );

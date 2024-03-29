@@ -13,6 +13,10 @@ module.exports = {
         body('medicineQuantity')
             .notEmpty().withMessage('medicineQuantity is required')
             .isNumeric().withMessage('medicineQuantity must be a number'),
+
+        body('price')
+            .notEmpty().withMessage('price is required')
+            .isNumeric().withMessage('price must be a number'),
     ],
 
     validateUpdatePharmacyMedicine: [
@@ -24,8 +28,16 @@ module.exports = {
             .notEmpty().withMessage('medicineId is required')
             .isMongoId().withMessage('Medicine ID must be a valid MongoDB ID'),
 
+        body('medicineName')
+            .optional()
+            .isString().withMessage('medicineName must be a string'),
+
         body('medicineQuantity')
-            .notEmpty().withMessage('medicineQuantity is required')
+            .optional()
             .isNumeric().withMessage('medicineQuantity must be a number'),
+
+        body('price')
+            .optional()
+            .isNumeric().withMessage('price must be a number'),
     ],
 };

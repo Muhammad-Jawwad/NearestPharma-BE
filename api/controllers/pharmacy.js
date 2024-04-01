@@ -361,9 +361,76 @@ module.exports = {
                 });
             }
             
-            const pharmacyMedicineList = await PharmacyMedicine.find({
-                pharmacyId: id
-            }).sort({ _id: -1 });
+            // const pharmacyMedicineList = await PharmacyMedicine.find({
+            //     pharmacyId: id
+            // }).sort({ _id: -1 });
+
+            // const foundCourses = await CourseTeacher.aggregate([
+            //     {
+            //         $match: {
+            //             teacherId: isExistTeacher._id
+            //         }
+            //     },
+            //     {
+            //         $sort: { _id: -1 }
+            //     },
+            //     {
+            //         $lookup: {
+            //             from: "courses",
+            //             localField: "courseId",
+            //             foreignField: "_id",
+            //             as: "course"
+            //         }
+            //     },
+            //     {
+            //         $lookup: {
+            //             from: "teachers",
+            //             localField: "teacherId",
+            //             foreignField: "_id",
+            //             as: "teacher"
+            //         }
+            //     },
+            //     {
+            //         $addFields: {
+            //             course: { $arrayElemAt: ["$course", 0] },
+            //             teacher: { $arrayElemAt: ["$teacher", 0] }
+            //         }
+            //     },
+            // ]);
+
+            const pharmacyMedicineList = await PharmacyMedicine.aggregate([
+                {
+                    $match: {
+                        pharmacyId: foundPharmacy._id
+                    }
+                },
+                {
+                    $sort: { _id: -1 }
+                },
+                {
+                    $lookup: {
+                        from: "pharmacies",
+                        localField: "pharmacyId",
+                        foreignField: "_id",
+                        as: "pharmacy"
+                    }
+                },
+                {
+                    $lookup: {
+                        from: "medicines",
+                        localField: "medicineId",
+                        foreignField: "_id",
+                        as: "medicine"
+                    }
+                },
+                {
+                    $addFields: {
+                        pharmacy: { $arrayElemAt: ["$pharmacy", 0] },
+                        medicine: { $arrayElemAt: ["$medicine", 0] }
+                    }
+                },
+            ])
+            console.log("pharmacyMedicineList", pharmacyMedicineList)
             if (pharmacyMedicineList.length === 0) {
                 return res.status(404).json({
                     code: 404,

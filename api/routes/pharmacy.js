@@ -1,4 +1,4 @@
-const { getPharmacy, createPharmacy, getPharmacyById, updatePharmacy, deletePharmacy, loginPharmacy, getPharmacyMedicine, createPharmacyMedicine, getMedicineByPharmay, updatePharmacyMedicine, deletePharmacyMedicine } = require("../controllers/pharmacy");
+const { getPharmacy, createPharmacy, getPharmacyById, updatePharmacy, loginPharmacy, getPharmacyMedicine, createPharmacyMedicine, updatePharmacyMedicine, deletePharmacyMedicine, getMedicineByPharmacy } = require("../controllers/pharmacy");
 const { validateCreatePharmacyMedicine, validateUpdatePharmacyMedicine } = require("../middlewares/pharmacyMedicineValidation");
 const { validateUpdatePharmacy, validateCreatePharmacy, validateLoginPharmacy } = require("../middlewares/pharmacyValidation");
 
@@ -35,7 +35,7 @@ router.post("/registerMedicine",
     validateCreatePharmacyMedicine,
     createPharmacyMedicine
 );
-router.get("/medicineByPharmacyId/:pharmacyId", getMedicineByPharmay);
+router.get("/medicineByPharmacyId/:pharmacyId", getMedicineByPharmacy);
 router.patch("/updateMedicineQuantity/:id",
     validateUpdatePharmacyMedicine,
     updatePharmacyMedicine

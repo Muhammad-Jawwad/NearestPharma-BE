@@ -111,14 +111,14 @@ module.exports = {
                 });
             }
             
-            const areaId = req.body.areaId;
-            const foundArea = await Area.findById(areaId);
-            if (!foundArea) {
-                return res.status(404).json({
-                    code: 404,
-                    message: "Area not found",
-                });
-            }
+            // const areaId = req.body.areaId;
+            // const foundArea = await Area.findById(areaId);
+            // if (!foundArea) {
+            //     return res.status(404).json({
+            //         code: 404,
+            //         message: "Area not found",
+            //     });
+            // }
 
             const { username, password, ...pharmacyData } = req.body;
 
@@ -212,17 +212,17 @@ module.exports = {
                 });
             }
 
-            const areaId = req.body.areaId;
-            const foundArea = await Area.findById(areaId);
-            if (!foundArea) {
-                return res.status(404).json({
-                    code: 404,
-                    message: "Area not found",
-                });
-            }
+            // const areaId = req.body.areaId;
+            // const foundArea = await Area.findById(areaId);
+            // if (!foundArea) {
+            //     return res.status(404).json({
+            //         code: 404,
+            //         message: "Area not found",
+            //     });
+            // }
 
             const updateFields = {};
-            const fieldsToUpdate = ['branchName', 'location', 'rating', 'daysOpen', 'openTime', 'services', 'areaId', 'mapUrl', 'address'];
+            const fieldsToUpdate = ['branchName', 'latitude', 'longitude', 'rating', 'city', 'country', 'areaName', 'mapUrl', 'address'];
             fieldsToUpdate.forEach(field => {
                 if (req.body[field] !== undefined) {
                     updateFields[field] = req.body[field];
@@ -349,7 +349,63 @@ module.exports = {
         }
     },
 
-    getMedicineByPharmay: async (req, res) => {
+    // getMedicineByPharmacy: async (req, res) => {
+    //     try {
+    //         const id = req.params.pharmacyId; // To separate the id from the parameter
+
+    //         const foundPharmacy = await Pharmacy.findById(id);
+    //         if (!foundPharmacy) {
+    //             return res.status(404).json({
+    //                 code: 404,
+    //                 message: "Pharmacy not found",
+    //             });
+    //         }
+
+    //         // Get page and limit from query parameters
+    //         const page = parseInt(req.query.page) || 1;
+    //         const limit = parseInt(req.query.limit) || 10;
+    //         const skip = (page - 1) * limit;
+
+    //         const pharmacyMedicineList = await PharmacyMedicine.find({ pharmacyId: foundPharmacy._id })
+    //             .sort({ _id: -1 })
+    //             .skip(skip)
+    //             .limit(limit)
+    //             .populate('pharmacyId')
+    //             .populate('medicineId');
+
+    //         // Optional: Count total documents for pagination metadata
+    //         const totalDocuments = await PharmacyMedicine.countDocuments({ pharmacyId: foundPharmacy._id });
+
+    //         console.log("pharmacyMedicineList", pharmacyMedicineList);
+    //         if (pharmacyMedicineList.length === 0) {
+    //             return res.status(404).json({
+    //                 code: 404,
+    //                 message: "This pharmacy Medicine not found",
+    //             });
+    //         }
+
+    //         res.json({
+    //             code: 200,
+    //             message: "Medicines by Pharmacies retrieved successfully",
+    //             data: pharmacyMedicineList,
+    //             pagination: {
+    //                 currentPage: page,
+    //                 totalPages: Math.ceil(totalDocuments / limit),
+    //                 totalItems: totalDocuments,
+    //                 pageSize: limit,
+    //             },
+    //         });
+    //     } catch (error) {
+    //         console.log(error);
+    //         res.status(500).json({
+    //             code: 500,
+    //             error: error.name,
+    //             message: error.message,
+    //         });
+    //     }
+    // },
+
+    getMedicineByPharmacy: async (req, res) => {
         try {
             const id = req.params.pharmacyId; //To seprate the id from the parameter
 
@@ -361,75 +417,9 @@ module.exports = {
                 });
             }
             
-            // const pharmacyMedicineList = await PharmacyMedicine.find({
-            //     pharmacyId: id
-            // }).sort({ _id: -1 });
+            const pharmacyMedicineList = await PharmacyMedicine.find({ pharmacyId: foundPharmacy._id }).sort({ _id: -1 })
+            .populate('pharmacyId').populate('medicineId')
 
-            // const foundCourses = await CourseTeacher.aggregate([
-            //     {
-            //         $match: {
-            //             teacherId: isExistTeacher._id
-            //         }
-            //     },
-            //     {
-            //         $sort: { _id: -1 }
-            //     },
-            //     {
-            //         $lookup: {
-            //             from: "courses",
-            //             localField: "courseId",
-            //             foreignField: "_id",
-            //             as: "course"
-            //         }
-            //     },
-            //     {
-            //         $lookup: {
-            //             from: "teachers",
-            //             localField: "teacherId",
-            //             foreignField: "_id",
-            //             as: "teacher"
-            //         }
-            //     },
-            //     {
-            //         $addFields: {
-            //             course: { $arrayElemAt: ["$course", 0] },
-            //             teacher: { $arrayElemAt: ["$teacher", 0] }
-            //         }
-            //     },
-            // ]);
-
-            const pharmacyMedicineList = await PharmacyMedicine.aggregate([
-                {
-                    $match: {
-                        pharmacyId: foundPharmacy._id
-                    }
-                },
-                {
-                    $sort: { _id: -1 }
-                },
-                {
-                    $lookup: {
-                        from: "pharmacies",
-                        localField: "pharmacyId",
-                        foreignField: "_id",
-                        as: "pharmacy"
-                    }
-                },
-                {
-                    $lookup: {
-                        from: "medicines",
-                        localField: "medicineId",
-                        foreignField: "_id",
-                        as: "medicine"
-                    }
-                },
-                {
-                    $addFields: {
-                        pharmacy: { $arrayElemAt: ["$pharmacy", 0] },
-                        medicine: { $arrayElemAt: ["$medicine", 0] }
-                    }
-                },
-            ])
             console.log("pharmacyMedicineList", pharmacyMedicineList)
             if (pharmacyMedicineList.length === 0) {
                 return res.status(404).json({

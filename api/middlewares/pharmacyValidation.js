@@ -18,40 +18,36 @@ module.exports = {
             .notEmpty().withMessage('Branch name is required')
             .isString().withMessage('Branch name must be a string'),
 
-        body('location.type')
-            .notEmpty().withMessage('Location type is required')
-            .isString().withMessage('Location type must be a string'),
+        body('longitude')
+            .notEmpty().withMessage('longitude is required')
+            .isNumeric().withMessage('longitude must be a number'),
 
-        body('location.coordinates')
-            .notEmpty().withMessage('Location coordinates are required')
-            .isArray().withMessage('Location coordinates must be an array'),
+        body('latitude')
+            .notEmpty().withMessage('latitude is required')
+            .isNumeric().withMessage('latitude must be a number'),
 
         body('rating')
-            .optional()
+            .notEmpty().withMessage('rating is required')
             .isNumeric().withMessage('Rating must be a number'),
 
-        body('daysOpen')
+        body('city')
             .optional()
-            .isArray().withMessage('Days open must be an array'),
+            .isArray().withMessage('city must be an array'),
 
-        body('openTime')
+        body('country')
             .optional()
-            .isString().withMessage('Open time must be a string'),
+            .isString().withMessage('country must be a string'),
 
-        body('services')
-            .optional()
-            .isObject().withMessage('Services must be an object'),
-
-        body('areaId')
-            .optional()
-            .isMongoId().withMessage('Area ID must be a valid MongoDB ID'),
+        body('areaName')
+            .notEmpty().withMessage('Area Name is required')
+            .isString().withMessage('Area must  be a string'),
 
         body('mapUrl')
-            .optional()
+            .notEmpty().withMessage('Map URL is required')
             .isString().withMessage('Map URL must be a string'),
 
         body('address')
-            .optional()
+            .notEmpty().withMessage('address is required')
             .isString().withMessage('Address must be a string')
     ],
 
@@ -60,33 +56,30 @@ module.exports = {
             .optional()
             .isString().withMessage('Branch name must be a string'),
 
-        body('location.type')
+        body('longitude')
             .optional()
-            .isString().withMessage('Location type must be a string'),
+            .isNumeric().withMessage('longitude must be a number'),
 
-        body('location.coordinates')
+        body('latitude')
             .optional()
-            .isArray().withMessage('Location coordinates must be an array'),
+            .isNumeric().withMessage('latitude must be a number'),
 
         body('rating')
             .optional()
             .isNumeric().withMessage('Rating must be a number'),
 
-        body('daysOpen')
+        body('city')
             .optional()
-            .isArray().withMessage('Days open must be an array'),
+            .isArray().withMessage('city must be an array'),
 
-        body('openTime')
+        body('country')
             .optional()
-            .isString().withMessage('Open time must be a string'),
+            .isString().withMessage('country must be a string'),
 
-        body('services')
+        body('areaName')
             .optional()
-            .isObject().withMessage('Services must be an object'),
+            .isString().withMessage('Area must  be a string'),
 
-        body('areaId')
-            .optional()
-            .isMongoId().withMessage('Area ID must be a valid MongoDB ID'),
 
         body('mapUrl')
             .optional()

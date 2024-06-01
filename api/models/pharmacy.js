@@ -1,3 +1,4 @@
+const { ServerDescriptionChangedEvent } = require("mongodb");
 const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
@@ -17,16 +18,16 @@ const pharmacySchema = new Schema(
             required: true
         },
         city: {
-            type: Number,
+            type: String,
             default:'Karachi'
         },
         country: {
-            type: Number,
+            type: String,
             default:'Pk'
         },
         rating: Number,
         areaName: {
-            type: Number,
+            type: String,
             required: true
         },
         mapUrl: String,

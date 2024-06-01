@@ -48,7 +48,7 @@ module.exports = {
 
     getMedicine: async (req, res) => {
         try {
-            const medicineList = await Medicine.find().sort({ _id: -1 });
+            const medicineList = await Medicine.find().sort({ _id: 1 });
             if (medicineList.length === 0) {
                 return res.status(404).json({
                     code: 404,
@@ -145,5 +145,43 @@ module.exports = {
             });
         }
     },
+
+    searchMedicineByName: async (req, res) => {
+        try {
+            const { name } = req.query; // Get the medicine name from the query parameter
+            if (!name) {
+                return res.status(400).json({
+                    code: 400,
+                    message: "Medicine name is required"
+                });
+            }
+
+            console.log("name", name)
+            const medicines = await Medicine.find({
+                medicineName: { $regex: name, $options: 'i' } // Case-insensitive search
+            });
+
+            if (medicines.length === 0) {
+                return res.status(404).json({
+                    code: 404,
+                    message: "No medicines found"
+                });
+            }
+
+            res.json({
+                code: 200,
+                message: "Medicines retrieved successfully",
+                count: medicines.length,
+                data: medicines,
+            });
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({
+                code: 500,
+                error: error.name,
+                message: error.message,
+            });
+        }
+    }
 
 }

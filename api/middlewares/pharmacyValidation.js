@@ -32,7 +32,7 @@ module.exports = {
 
         body('city')
             .optional()
-            .isArray().withMessage('city must be an array'),
+            .isString().withMessage('city must be a string'),
 
         body('country')
             .optional()
@@ -40,7 +40,7 @@ module.exports = {
 
         body('areaName')
             .notEmpty().withMessage('Area Name is required')
-            .isString().withMessage('Area must  be a string'),
+            .isString().withMessage('Area must be a string'),
 
         body('mapUrl')
             .notEmpty().withMessage('Map URL is required')
@@ -70,7 +70,7 @@ module.exports = {
 
         body('city')
             .optional()
-            .isArray().withMessage('city must be an array'),
+            .isString().withMessage('city must be a string'),
 
         body('country')
             .optional()

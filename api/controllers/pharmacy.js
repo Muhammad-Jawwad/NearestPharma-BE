@@ -103,6 +103,7 @@ module.exports = {
                 });
             }
 
+            console.log("Api is hitting")
             const foundUsername = await PharmacyUser.find({ username: req.body.username });
             if (foundUsername.length !== 0) {
                 return res.status(404).json({
@@ -124,6 +125,7 @@ module.exports = {
 
             //creating a new pharmacy
             const newPharmacy = new Pharmacy(pharmacyData);
+            console.log("newPharmacy", newPharmacy)
             const PharmacyDetails = await newPharmacy.save();
 
             const registeredPharmacyData = await registerPharmacyUser(PharmacyDetails._id, username, password)
@@ -349,65 +351,17 @@ module.exports = {
         }
     },
 
-    // getMedicineByPharmacy: async (req, res) => {
-    //     try {
-    //         const id = req.params.pharmacyId; // To separate the id from the parameter
-
-    //         const foundPharmacy = await Pharmacy.findById(id);
-    //         if (!foundPharmacy) {
-    //             return res.status(404).json({
-    //                 code: 404,
-    //                 message: "Pharmacy not found",
-    //             });
-    //         }
-
-    //         // Get page and limit from query parameters
-    //         const page = parseInt(req.query.page) || 1;
-    //         const limit = parseInt(req.query.limit) || 10;
-    //         const skip = (page - 1) * limit;
-
-    //         const pharmacyMedicineList = await PharmacyMedicine.find({ pharmacyId: foundPharmacy._id })
-    //             .sort({ _id: -1 })
-    //             .skip(skip)
-    //             .limit(limit)
-    //             .populate('pharmacyId')
-    //             .populate('medicineId');
-
-    //         // Optional: Count total documents for pagination metadata
-    //         const totalDocuments = await PharmacyMedicine.countDocuments({ pharmacyId: foundPharmacy._id });
-
-    //         console.log("pharmacyMedicineList", pharmacyMedicineList);
-    //         if (pharmacyMedicineList.length === 0) {
-    //             return res.status(404).json({
-    //                 code: 404,
-    //                 message: "This pharmacy Medicine not found",
-    //             });
-    //         }
-
-    //         res.json({
-    //             code: 200,
-    //             message: "Medicines by Pharmacies retrieved successfully",
-    //             data: pharmacyMedicineList,
-    //             pagination: {
-    //                 currentPage: page,
-    //                 totalPages: Math.ceil(totalDocuments / limit),
-    //                 totalItems: totalDocuments,
-    //                 pageSize: limit,
-    //             },
-    //         });
-    //     } catch (error) {
-    //         console.log(error);
-    //         res.status(500).json({
-    //             code: 500,
-    //             error: error.name,
-    //             message: error.message,
-    //         });
-    //     }
-    // },
-
     getMedicineByPharmacy: async (req, res) => {
         try {
-            const id = req.params.pharmacyId; //To seprate the id from the parameter
+            const id = req.params.pharmacyId; // To separate the id from the parameter
+
+            // Check if the provided ID is a valid ObjectId
+            if (!id) {
+                return res.status(400).json({
+                    code: 400,
+                    message: "Invalid pharmacy ID",
+                });
+            }
 
             const foundPharmacy = await Pharmacy.findById(id);
             if (!foundPharmacy) {
@@ -416,21 +370,53 @@ module.exports = {
                     message: "Pharmacy not found",
                 });
             }
-            
-            const pharmacyMedicineList = await PharmacyMedicine.find({ pharmacyId: foundPharmacy._id }).sort({ _id: -1 })
-            .populate('pharmacyId').populate('medicineId')
 
-            console.log("pharmacyMedicineList", pharmacyMedicineList)
+            // Get page and limit from query parameters
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 10;
+            const search = req.query.search || ''
+            const skip = (page - 1) * limit;
+
+            var query = { 
+                pharmacyId: foundPharmacy._id
+            }
+            if(search){
+                const filter = {
+                    medicineName: { $regex: search, $options: 'i' }
+                }
+                const medicineListIds = await Medicine.find(filter).select('_id')
+                console.log('medicineListIds', medicineListIds)
+                query.medicineId = { $in: medicineListIds }
+            }
+
+            const pharmacyMedicineList = await PharmacyMedicine.find(query)
+                .sort({ _id: -1 })
+                .skip(skip)
+                .limit(limit)
+                .populate('pharmacyId')
+                .populate('medicineId');
+
+            // Optional: Count total documents for pagination metadata
+            const totalDocuments = await PharmacyMedicine.countDocuments(query);
+
+            console.log("pharmacyMedicineList", pharmacyMedicineList);
             if (pharmacyMedicineList.length === 0) {
                 return res.status(404).json({
                     code: 404,
-                    message: "This pharmacy Medicine not found"
+                    message: "This pharmacy Medicine not found",
                 });
             }
+
             res.json({
                 code: 200,
                 message: "Medicines by Pharmacies retrieved successfully",
-                data: pharmacyMedicineList
+                data: pharmacyMedicineList,
+                pagination: {
+                    currentPage: page,
+                    totalPages: Math.ceil(totalDocuments / limit),
+                    totalItems: totalDocuments,
+                    pageSize: limit,
+                },
             });
         } catch (error) {
             console.log(error);
@@ -441,6 +427,44 @@ module.exports = {
             });
         }
     },
+
+
+    // getMedicineByPharmacy: async (req, res) => {
+    //     try {
+    //         const id = req.params.pharmacyId; //To seprate the id from the parameter
+
+    //         const foundPharmacy = await Pharmacy.findById(id);
+    //         if (!foundPharmacy) {
+    //             return res.status(404).json({
+    //                 code: 404,
+    //                 message: "Pharmacy not found",
+    //             });
+    //         }
+
+    //         const pharmacyMedicineList = await PharmacyMedicine.find({ pharmacyId: foundPharmacy._id }).sort({ _id: -1 })
+    //         .populate('pharmacyId').populate('medicineId')
+
+    //         // console.log("pharmacyMedicineList", pharmacyMedicineList)
+    //         if (pharmacyMedicineList.length === 0) {
+    //             return res.status(404).json({
+    //                 code: 404,
+    //                 message: "This pharmacy Medicine not found"
+    //             });
+    //         }
+    //         res.json({
+    //             code: 200,
+    //             message: "Medicines by Pharmacies retrieved successfully",
+    //             data: pharmacyMedicineList
+    //         });
+    //     } catch (error) {
+    //         console.log(error);
+    //         res.status(500).json({
+    //             code: 500,
+    //             error: error.name,
+    //             message: error.message,
+    //         });
+    //     }
+    // },
 
     updatePharmacyMedicine: async (req, res) => {
         try {
@@ -516,13 +540,14 @@ module.exports = {
 
     deletePharmacyMedicine: async (req, res) => {
         try {
-           
             const id = req.params.id; //To seprate the id from the parameter
             if (!id) {
                 return res.status(400).json({
                     message: "pahrmacy medicine id is required in params",
                 });
             }
+
+            console.log("id",id)
 
             const deletedPharmacyMedicine = await PharmacyMedicine.findByIdAndDelete(id);
 

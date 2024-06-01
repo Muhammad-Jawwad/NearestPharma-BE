@@ -1,4 +1,4 @@
-const { getMedicine, createMedicine, updateMedicine, getMedicineById } = require("../controllers/medicine");
+const { getMedicine, createMedicine, updateMedicine, getMedicineById, searchMedicineByName } = require("../controllers/medicine");
 const { validateCreateMedicine, validateUpdateMedicine } = require("../middlewares/medicineValidation");
 
 const router = require("express").Router();
@@ -14,7 +14,7 @@ router.patch("/update/:id",
     validateUpdateMedicine,
     updateMedicine
 );
-
+router.get("/get/search", searchMedicineByName);
 
 
 module.exports = router;

@@ -40,7 +40,7 @@ router.patch("/updateMedicineQuantity/:id",
     validateUpdatePharmacyMedicine,
     updatePharmacyMedicine
 );
-router.get("/deleteRegisteredMedicine/:id", deletePharmacyMedicine);
+router.delete("/deleteRegisteredMedicine/:id", deletePharmacyMedicine);
 
 //#endregion
 

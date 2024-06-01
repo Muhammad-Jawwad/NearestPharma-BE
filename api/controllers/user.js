@@ -102,7 +102,8 @@ async function predictPharmacy(req, res) {
 
             return {
                 pharmacyId: object.pharmacyId,
-                distance: weightedDistance
+                distance: weightedDistance,
+                medicineQuantity: object.medicineQuantity,
             };
         });
 
@@ -110,7 +111,12 @@ async function predictPharmacy(req, res) {
         weightedDistances.sort((a, b) => a.distance - b.distance);
 
         // Return top 5 pharmacies
-        const topPharmacies = weightedDistances.slice(0, 5).map(item => item.pharmacyId);
+        // const topPharmacies = weightedDistances.slice(0, 5).map(item => item.pharmacyId);
+        const topPharmacies = weightedDistances.slice(0, 5).map(item => ({
+            pharmacyId: item.pharmacyId,
+            medicineQuantity: item.medicineQuantity,
+        }));
+
 
         // Returning success message
         res.status(200).json({

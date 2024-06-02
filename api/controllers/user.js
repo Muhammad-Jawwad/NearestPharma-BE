@@ -104,6 +104,7 @@ async function predictPharmacy(req, res) {
                 pharmacyId: object.pharmacyId,
                 distance: weightedDistance,
                 medicineQuantity: object.medicineQuantity,
+                price: price,
             };
         });
 
@@ -115,6 +116,7 @@ async function predictPharmacy(req, res) {
         const topPharmacies = weightedDistances.slice(0, 5).map(item => ({
             pharmacyId: item.pharmacyId,
             medicineQuantity: item.medicineQuantity,
+            price: item.price,
         }));
 
 

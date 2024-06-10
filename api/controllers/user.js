@@ -55,6 +55,7 @@ async function predictPharmacy(req, res) {
 
         const isMedicineAvailable = await PharmacyMedicine.find({
             medicineId: medicineId,
+            price: { $gt: 0 },
             medicineQuantity: { $gt: medicineQuantity }
         }).populate('pharmacyId')
         .populate('medicineId');
